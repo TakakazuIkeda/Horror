@@ -10,15 +10,21 @@ public class CharacterMoveController : MonoBehaviour
     private bool groundedPlayer = true;
     public float playerSpeed = 2.0f;
     public float jumppower = 1.0f;
+    public float gravityValue = -9.81f;
     
     public Animator Animator;
+
+    // 前の速度
+    private Vector3 oldVelocity;
+
+    public FootStepsSoundManager FootStepsSoundManager;
 
     // Update is called once per frame
     void Update()
     {
         groundedPlayer = CharacterController.isGrounded;
 
-        // 設置しているかを見る。
+        // 接地しているかを見る。
         if(groundedPlayer && playerVelocity.y < 0)
         {
             playerVelocity.y = 0;
@@ -31,13 +37,33 @@ public class CharacterMoveController : MonoBehaviour
 
         Animator.SetFloat("MovePower", movePower);
 
-        CharacterController.Move(move * Time.deltaTime * playerSpeed);
-
-        // 何か入力されていれば（　Vector3(0,0,0)以外ならば　）
-        if (move != Vector3.zero)
+        if (movePower > 0)
         {
-            gameObject.transform.forward = move;
+            FootStepsSoundManager.PlayFootStepSE();
+        }
+        else
+        {
+            FootStepsSoundManager.StopFootStepSE();
         }
 
+        // playerの加速度にmoveの値を代入
+        playerVelocity = move;
+        // S
+        // 
+        playerVelocity = Vector3.Slerp(oldVelocity, playerVelocity, playerSpeed * Time.deltaTime);
+
+        // 
+        oldVelocity = playerVelocity;
+
+        // 
+        if (playerVelocity.magnitude > 0f)
+        {
+            //
+            transform.LookAt(transform.position + playerVelocity);
+        }
+
+
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        CharacterController.Move(playerVelocity * Time.deltaTime);
     }
 }
