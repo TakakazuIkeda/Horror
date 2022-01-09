@@ -7,7 +7,7 @@ public class CharacterMoveController : MonoBehaviour
     public CharacterController CharacterController;
     private Vector3 playerVelocity;
     private bool groundedPlayer = true;
-    public float playerSpeed = 2.0f;
+    public float playerSpeed = 10.0f;
     public float jumppower = 1.0f;
     public float gravityValue = -9.81f;
     
@@ -22,7 +22,7 @@ public class CharacterMoveController : MonoBehaviour
     public Camera mainCamera;
 
     // スタミナの最大値
-    public float MaxStamina = 6f;
+    public float MaxStamina = 200f;
 
     // 今のスタミナ
     public float NowStamina = 0f;
@@ -72,12 +72,12 @@ public class CharacterMoveController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.X))
         {
-            playerSpeed = 3.5f;
+            playerSpeed = 2f;
             NowStamina -= Time.deltaTime;
         }
         else
         {
-            playerSpeed = 2.0f;
+            playerSpeed = 4.0f;
             if (NowStamina < MaxStamina)
             {
                 NowStamina += Time.deltaTime;
